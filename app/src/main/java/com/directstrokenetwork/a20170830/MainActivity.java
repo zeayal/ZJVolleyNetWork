@@ -1,30 +1,26 @@
 package com.directstrokenetwork.a20170830;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.directstrokenetwork.network.HttpUtils;
-import com.directstrokenetwork.network.example.OrderData;
+import com.directstrokenetwork.network.example.EncapsulationHttpUtilsExample;
+import com.directstrokenetwork.network.example.models.Order;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -59,10 +55,14 @@ public class MainActivity extends AppCompatActivity {
         request_get_gson_btn = (Button) findViewById(R.id.send_get_gson_request_btn);
         request_post_gson_btn = (Button) findViewById(R.id.send_post_gson_request_btn);
 
-        request_get_string_btn.setOnClickListener(new View.OnClickListener() {
+        request_post_gson_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendGetRequest();
+                try {
+                    sendGsonPostRequest();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -92,27 +92,17 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    //发送 get StringRequest 请求
-    private void sendGetRequest() {
-//        RequestQueue queue = Volley.newRequestQueue(this);
-//        StringRequest stringRequest = new StringRequest("http://rapapi.org/mockjsdata/25158/api/orders", new Response.Listener<String>() {
-//            @Override
-//            public void onResponse(String response) {
-//                msg_tv.setText(response);
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                msg_tv.setText(error.toString());
-//            }
-//        });
-//        queue.add(stringRequest);
+    //发送 sendGsonPostRequest 请求
+    private void sendGsonPostRequest() throws JSONException {
 
-        String url = "http://rapapi.org/mockjsdata/25158/api/orders";
-        HttpUtils.sendGetGsonRequest(url, this, OrderData.class, new Response.Listener<OrderData>() {
+        String url = "http://rapapi.org/mockjsdata/25158/api/orders/test";
+        JSONObject params = new JSONObject();
+        params.put("lineID", "189");
+
+        EncapsulationHttpUtilsExample.sendPostGsonRequest(url, this, Order.class, params,  new Response.Listener<Order>() {
             @Override
-            public  void onResponse(OrderData response) {
-                Log.d("Tag:debug", response.message);
+            public void onResponse(Order response) {
+                Log.d("Tag:debug", response.getMessage());
             }
         }, new Response.ErrorListener() {
             @Override

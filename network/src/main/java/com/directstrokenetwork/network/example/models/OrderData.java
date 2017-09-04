@@ -1,4 +1,4 @@
-package com.directstrokenetwork.network.example;
+package com.directstrokenetwork.network.example.models;
 
 import java.util.ArrayList;
 
