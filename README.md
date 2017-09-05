@@ -28,7 +28,7 @@
 
 ** 模拟接口 **
 
-*这里模拟一个 Get 接口：http://rapapi.org/mockjsdata/25158/api/orders*
+*这里模拟一个 Get && POST 接口：http://rapapi.org/mockjsdata/25158/api/orders(这个接口也可以 post)*
 ```
 // 接口返回数据
  {
@@ -142,27 +142,38 @@ public class EncapsulationHttpUtilsExample {
 
     //发送 get GsonRequest 请求
     private void sendGetGsonRequest() {
-
+        String url = "http://rapapi.org/mockjsdata/25158/api/orders/test";
+        EncapsulationHttpUtilsExample.sendGetGsonRequest(url, this, Order.class,  new Response.Listener<Order>() {
+            @Override
+            public void onResponse(Order order) {
+                Log.d("Tag:debug", order.getMessage());
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Tag:error", error.toString());
+            }
+        });
     }
 
     //发送 post GsonRequest 请求
     private void sendPostGsonRequest() {
         // 其中传递的 params 参数可以为 JsonObject | JsonArray | Object
-            String url = "http://rapapi.org/mockjsdata/25158/api/orders/test";
-            JSONObject params = new JSONObject();
-            params.put("lineID", "189");
+        String url = "http://rapapi.org/mockjsdata/25158/api/orders/test";
+        JSONObject params = new JSONObject();
+        params.put("lineID", "189");
 
-            EncapsulationHttpUtilsExample.sendPostGsonRequest(url, this, Order.class, params,  new Response.Listener<Order>() {
-                @Override
-                public void onResponse(Order order) {
-                    Log.d("Tag:debug", order.getMessage());
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e("Tag:error", error.toString());
-                }
-            });
+        EncapsulationHttpUtilsExample.sendPostGsonRequest(url, this, Order.class, params,  new Response.Listener<Order>() {
+            @Override
+            public void onResponse(Order order) {
+                Log.d("Tag:debug", order.getMessage());
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Tag:error", error.toString());
+            }
+        });
     }
 
 ```
