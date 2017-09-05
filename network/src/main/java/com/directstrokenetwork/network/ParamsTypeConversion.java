@@ -28,8 +28,8 @@ public class ParamsTypeConversion {
 
         if (params != null) {
             if (params instanceof JSONObject || params instanceof JSONArray) {
-                Log.d("TAG:Debug:ParamsTypeConversion:JSONObject to byte[]", String.valueOf(params.toString()));
-                return params.toString().getBytes();
+                Log.d("TAG:Debug:ParamsTypeConversion:JSONObject to byte[]", params.toString());
+                return params.toString().getBytes("UTF-8");
             } else if (params instanceof Object) {
                 // 转换对象到 byte[]
                 byte[] bytes = serialize(params);

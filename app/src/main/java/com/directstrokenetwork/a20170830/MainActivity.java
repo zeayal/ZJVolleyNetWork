@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.directstrokenetwork.network.example.EncapsulationHttpUtilsExample;
+import com.directstrokenetwork.network.example.ZJModel.OrderList;
 import com.directstrokenetwork.network.example.models.Order;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -58,11 +59,7 @@ public class MainActivity extends AppCompatActivity {
         request_post_gson_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    sendGsonPostRequest();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                sendZJRequest();
             }
         });
 
@@ -125,6 +122,36 @@ public class MainActivity extends AppCompatActivity {
     //发送 get GsonRequest 请求
     private void sendPostGsonRequest() {
 
+    }
+
+
+    // 直击网络测试
+    private void sendZJRequest() {
+        String url = "http://192.168.1.23:90/api/v1.0/Order/GetOrderList";
+        JSONObject params = new JSONObject();
+        try {
+            params.put("PageIndex", 1);
+            params.put("PageSize", 5);
+            params.put("OrderFlag", "");
+            params.put("PayState", "");
+            params.put("StartCreateDate", "");
+            params.put("EndCreateDate", "");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        EncapsulationHttpUtilsExample.sendPostGsonRequest(url, this, OrderList.class, params,  new Response.Listener<OrderList>() {
+            @Override
+            public void onResponse(OrderList response) {
+                Log.d("Tag:debug", response.getMessage());
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Tag:error", error.toString());
+            }
+        });
     }
 
 }

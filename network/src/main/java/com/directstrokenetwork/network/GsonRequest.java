@@ -23,6 +23,13 @@ import java.util.Map;
 
 public class GsonRequest<T, E> extends Request<T> {
 
+    /** Default charset for JSON request. */
+    protected static final String PROTOCOL_CHARSET = "utf-8";
+
+    /** Content type for request. */
+    private static final String PROTOCOL_CONTENT_TYPE =
+            String.format("application/json; charset=%s", PROTOCOL_CHARSET);
+
     private final Gson gson = new Gson();
     private final Class<T> clazz;
     private final Map<String, String>headers;
@@ -71,15 +78,20 @@ public class GsonRequest<T, E> extends Request<T> {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public byte[] getBody() throws AuthFailureError {
-        byte[] bytes = new byte[0];
+        byte[] bytes = null;
         try {
             bytes = ParamsTypeConversion.convertToByte(params);
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        Log.d("TAG:Debug:params", params.toString());
-//        Log.d("TAG:Debug:params.byte", bytes.toString());
+        Log.d("TAG:Debug:params", params.toString());
+        Log.d("TAG:Debug:params.byte", bytes.toString());
         return bytes != null ? bytes : super.getBody();
+    }
+
+    @Override
+    public String getBodyContentType() {
+        return PROTOCOL_CONTENT_TYPE;
     }
 
     @Override
@@ -87,7 +99,6 @@ public class GsonRequest<T, E> extends Request<T> {
 
         try {
             String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-            Log.d("Tag:debug:GsonRequest:", "parseNetworkResponse");
             return Response.success(
                     gson.fromJson(json, clazz),
                     HttpHeaderParser.parseCacheHeaders(response));
